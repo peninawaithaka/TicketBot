@@ -1,6 +1,7 @@
 <Activity mc:Ignorable="sap sap2010" x:Class="Jira_Tickets" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:sap2010="http://schemas.microsoft.com/netfx/2010/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:snm="clr-namespace:System.Net.Mail;assembly=System" xmlns:ui="http://schemas.uipath.com/workflow/activities" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
   <x:Members>
     <x:Property Name="out_SendersMail" Type="OutArgument(x:String)" />
+    <x:Property Name="out_Attachments" Type="OutArgument(scg:IEnumerable(x:String))" />
   </x:Members>
   <mva:VisualBasic.Settings>
     <x:Null />
@@ -75,7 +76,6 @@
       <AssemblyReference>System.ComponentModel.Composition</AssemblyReference>
       <AssemblyReference>System.Memory</AssemblyReference>
       <AssemblyReference>UiPath.Excel</AssemblyReference>
-      <AssemblyReference>System.Runtime.WindowsRuntime</AssemblyReference>
     </scg:List>
   </TextExpression.ReferencesForImplementation>
   <Sequence DisplayName="Jira Tickets" sap:VirtualizedContainerService.HintSize="475.2,1034.4" sap2010:WorkflowViewState.IdRef="Sequence_5">
@@ -88,7 +88,7 @@
       </scg:Dictionary>
     </sap:WorkflowViewStateService.ViewState>
     <ui:LogMessage DisplayName="Log Message" sap:VirtualizedContainerService.HintSize="433.6,92.8" sap2010:WorkflowViewState.IdRef="LogMessage_5" Level="Info" Message="[&quot;Automation started&quot;]" />
-    <ui:GetOutlookMailMessages FilterByMessageIds="{x:Null}" TimeoutMS="{x:Null}" Account="penina.waithaka@thejitu.com" sap2010:Annotation.AnnotationText="Getting the mail messages from the outlook email." DisplayName="Get Outlook Mail Messages" Filter="[Subject]='Jira Ticket'" GetAttachements="False" sap:VirtualizedContainerService.HintSize="433.6,66.4" sap2010:WorkflowViewState.IdRef="GetOutlookMailMessages_2" MailFolder="Inbox" MarkAsRead="False" Messages="[Mailmessages]" OnlyUnreadMessages="False" OrderByDate="NewestFirst" Top="30">
+    <ui:GetOutlookMailMessages FilterByMessageIds="{x:Null}" TimeoutMS="{x:Null}" Account="penina.waithaka@thejitu.com" sap2010:Annotation.AnnotationText="Getting the mail messages from the outlook email." DisplayName="Get Outlook Mail Messages" Filter="[Subject]='Jira Ticket'" GetAttachements="False" sap:VirtualizedContainerService.HintSize="433.6,66.4" sap2010:WorkflowViewState.IdRef="GetOutlookMailMessages_2" MailFolder="Inbox" MarkAsRead="False" Messages="[Mailmessages]" OnlyUnreadMessages="True" OrderByDate="NewestFirst" Top="5">
       <sap:WorkflowViewStateService.ViewState>
         <scg:Dictionary x:TypeArguments="x:String, x:Object">
           <x:Boolean x:Key="IsAnnotationDocked">True</x:Boolean>
@@ -102,9 +102,6 @@
             <DelegateInArgument x:TypeArguments="snm:MailMessage" Name="mail" />
           </ActivityAction.Argument>
           <Sequence DisplayName="Body" sap:VirtualizedContainerService.HintSize="375.2,413.6" sap2010:WorkflowViewState.IdRef="Sequence_4">
-            <Sequence.Variables>
-              <Variable x:TypeArguments="scg:IEnumerable(x:String)" Name="Attachments" />
-            </Sequence.Variables>
             <sap:WorkflowViewStateService.ViewState>
               <scg:Dictionary x:TypeArguments="x:String, x:Object">
                 <x:Boolean x:Key="IsExpanded">True</x:Boolean>
@@ -119,7 +116,7 @@
                 <InArgument x:TypeArguments="x:String">[mail.From.Address]</InArgument>
               </Assign.Value>
             </Assign>
-            <ui:SaveMailAttachments Attachments="[Attachments]" DisplayName="Save Attachments" FolderPath="C:\Users\pesh\Documents\UiPath\TicketBot\Attachments" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="SaveMailAttachments_3" Message="[mail]" OverwriteExisting="False" />
+            <ui:SaveMailAttachments Attachments="[out_Attachments]" DisplayName="Save Attachments" FolderPath="C:\Users\pesh\Documents\UiPath\TicketBot\Attachments" sap:VirtualizedContainerService.HintSize="333.6,88" sap2010:WorkflowViewState.IdRef="SaveMailAttachments_3" Message="[mail]" OverwriteExisting="False" />
           </Sequence>
         </ActivityAction>
       </ui:ForEach.Body>
